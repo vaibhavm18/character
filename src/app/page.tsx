@@ -12,7 +12,7 @@ export default function Home() {
     <div className="min-h-screen">
       <LoginDialog />
       <Header />
-      <main className="w-full max-w-7xl mx-auto px-4 py-5 mt-20">
+      <main className="w-full max-w-7xl mx-auto px-4 py-5">
         <section className="my-8">
           <h2 className="font-medium mb-4">For you</h2>
           <div className="flex gap-x-2 overflow-x-auto pb-4">
