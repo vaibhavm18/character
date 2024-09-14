@@ -5,10 +5,12 @@ import AvatarText from '@/components/AvtarText';
 import Profile from '@/components/profile';
 import DecisionCard from "@/components/DecisionCard"
 import FeatureSelect from '@/components/FeatureSelect';
+import LoginDialog from '@/components/LoginDialog';
 
 export default function Home() {
   return (
     <div className="min-h-screen">
+      <LoginDialog />
       <Header />
       <main className="w-full max-w-7xl mx-auto px-4 py-5 mt-20">
         <section className="my-8">
@@ -48,7 +50,7 @@ export default function Home() {
         </div> */}
 
         <FeatureSelect />
-        
+
         <section className="my-8">
           <h2 className="text-xl mb-4">Featured</h2>
           <div className="flex gap-x-3 overflow-x-auto pb-4">
