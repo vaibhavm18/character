@@ -32,7 +32,7 @@ export const Header: React.FC = () => {
               <Sidebar closeSidebar={closeSidebar} />
             </SheetContent>
           </Sheet>
-          <div className="space-y-2 hidden lg:flex flex-col gap-2">
+          <div className="space-y-2 hidden lg:flex flex-col">
             <h1>Welcome Back</h1>
             <UserAvatar username="Username" />
           </div>
