@@ -4,11 +4,12 @@ import { Compass, ChevronLeft, Plus } from "lucide-react"
 
 interface Props {
   closeSidebar: () => void
+  logout: () => void
 }
 
-const Sidebar = ({ closeSidebar }: Props) => {
+const Sidebar = ({ closeSidebar, logout }: Props) => {
   return (
-    <div className="h-full w-full flex flex-col">
+    <div className="h-full w-full flex flex-col py-4 px-4">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-xl font-bold">character.ai</h1>
         <span onClick={closeSidebar} className='p-1 transition-all cursor-pointer hover:bg-[#1F1F22] rounded-full text-center'>
@@ -43,7 +44,7 @@ const Sidebar = ({ closeSidebar }: Props) => {
         Try c.ai+
       </Button>
 
-      <Button variant={"default"} className="flex items-center border-none bg-transparent rounded-xl hover:bg-[#3F3F36] py-6">
+      <Button variant={"default"} onClick={logout} className="flex items-center border-none bg-transparent rounded-xl hover:bg-[#3F3F36] py-6">
         <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white font-bold mr-2">
           U
         </div>
