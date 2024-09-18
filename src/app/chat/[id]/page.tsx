@@ -8,11 +8,11 @@ import UserProfileComponent from "@/components/chat/UserProfileSidebar";
 import { Button } from "@/components/ui/button";
 import { avengersConversation } from "@/lib/data";
 import { Menu } from "lucide-react";
-import React, {  useState } from "react";
+import React, { useState } from "react";
 
 export default function Page() {
+  const [chatSidebar, setChatSidebar] = useState(true);
   const [profileSidebar, setProfileSidebar] = useState(false);
-  const [chatSidebar, setChatSidebar] = useState(false);
 
   const openProfileSidebar = () => {
     setProfileSidebar(true);
@@ -66,26 +66,28 @@ export default function Page() {
       >
         <ChatSidebar closeSidebar={closeChatSidebar} />
       </div>
-      <div className="my-24 px-4 w-full max-w-3xl mx-auto overflow-auto">
-        {avengersConversation.map((val) => {
-          return (
-            <Message
-              key={val.content}
-              content={val.content}
-              isAI={val.isAI}
-              username={val.username}
-            />
-          );
-        })}
+      <div className="overflow-auto flex-grow relative">
+        <div className="my-24 flex-grow px-4 w-full max-w-3xl mx-auto ">
+          {avengersConversation.map((val) => {
+            return (
+              <Message
+                key={val.content}
+                content={val.content}
+                isAI={val.isAI}
+                username={val.username}
+              />
+            );
+          })}
+        </div>
+        <div className="sticky bg-[#18181B] bottom-0 left-2 right-1 z-40 ">
+          <MessageInput />
+          {/* <p>Remember: Everything Characters say is made up!</p> */}
+        </div>
       </div>
       <div
         className={`w-[400px] hidden 2xl:block p-6 border-l-[0.2px] border-gray-700 relative z-50`}
       >
         <UserProfileComponent />
-      </div>
-      <div className="fixed  bg-[#18181B] bottom-0 left-0 right-0 z-40 ">
-        <MessageInput />
-        {/* <p>Remember: Everything Characters say is made up!</p> */}
       </div>
     </main>
   );
