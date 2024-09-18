@@ -5,11 +5,12 @@ import { Search } from "lucide-react";
 interface Props {
   placeholder?: string
   hide?: boolean
+
 }
 
-export const SearchInput: React.FC<Props> = ({placeholder = "Search", hide=true}) => {
+export const SearchInput: React.FC<Props> = ({placeholder = "Search", hide=false}) => {
   return (
-    <div className={"relative md:block " + `${hide && "hidden"}`}>
+    <div className={"relative hidden md:inline-block " + `${hide && "hidden"}`}>
       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white h-4 w-4" />
       <Input
         type="text"
