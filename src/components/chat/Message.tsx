@@ -1,23 +1,28 @@
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "../ui/button";
+import TypingSimulator from "../TypingSimulator";
 
 interface Props {
   username: string;
   content: string;
   isAI: boolean;
+  shouldStream?: boolean;
+  ref? :React.RefObject<HTMLDivElement> | null
+
 }
-const Message = ({ content, isAI, username }: Props) => (
+const Message = ({ content, isAI, username, shouldStream = false, ref= null}: Props) => (
   <div
     className={`flex flex-col gap-2 mb-4 group ${
       isAI ? "items-start" : "items-end"
     }`}
+    ref={ref}
   >
     <div
       className={`flex items-center ${isAI ? "flex-row" : "flex-row-reverse"}`}
     >
       <Avatar className="h-8 w-8 mx-2">
-        <AvatarImage src="/path-to-eula-image.jpg" alt="Eula Lawrence" />
+        <AvatarImage src="" alt="Eula Lawrence" />
         <AvatarFallback>EL</AvatarFallback>
       </Avatar>
       <span>{username}</span>
@@ -42,13 +47,17 @@ const Message = ({ content, isAI, username }: Props) => (
         </>
       )}
     </div>
-    <p
-      className={`max-w-[70%] mx-9 p-2 rounded-xl bg-[#26272B] ${
-        isAI ? " self-start" : " self-end"
-      }`}
-    >
-      {content}
-    </p>
+    {shouldStream ? (
+      <TypingSimulator   text={content} />
+    ) : (
+      <p
+        className={`max-w-[70%] mx-9 p-2 rounded-xl bg-[#26272B] ${
+          isAI ? " self-start" : " self-end"
+        }`}
+      >
+        {content}
+      </p>
+    )}
   </div>
 );
 export default Message;

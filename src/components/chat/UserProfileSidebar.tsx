@@ -19,7 +19,7 @@ const UserProfileComponent = () => {
     <div className=" text-white  bg-[#18181B]   w-full h-full space-y-4">
       <div className="flex items-center space-x-3">
         <Avatar className="h-12 w-12">
-          <AvatarImage src="/path-to-eula-image.jpg" alt="Eula Lawrence" />
+          <AvatarImage src="" alt="Eula Lawrence" />
           <AvatarFallback>EL</AvatarFallback>
         </Avatar>
         <div className="flex-1">

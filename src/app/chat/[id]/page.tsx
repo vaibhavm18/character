@@ -8,11 +8,30 @@ import UserProfileComponent from "@/components/chat/UserProfileSidebar";
 import { Button } from "@/components/ui/button";
 import { avengersConversation } from "@/lib/data";
 import { Menu } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+
+type MessageType = {
+  username: string;
+  content: string;
+  isAI: boolean;
+  shouldStream?: boolean;
+};
 
 export default function Page() {
   const [chatSidebar, setChatSidebar] = useState(true);
   const [profileSidebar, setProfileSidebar] = useState(false);
+
+  const [userAddedText, setUserAddedText] = useState<MessageType[]>([]);
+
+  const appendText = (text: string) => {
+    setUserAddedText((prev) => {
+      return [
+        ...prev,
+        { content: text, isAI: false, username: "Tony Stark" },
+        { content: text, isAI: true, username: "JARVIS", shouldStream: true },
+      ];
+    });
+  };
 
   const openProfileSidebar = () => {
     setProfileSidebar(true);
@@ -31,11 +50,15 @@ export default function Page() {
     setChatSidebar(false);
   };
 
-  // const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // const scrollToBottom = () => {
-  //   messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  // };
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [userAddedText]);
 
   return (
     <main className="relative bg-[#18181B] flex justify-between overflow-hidden h-screen">
@@ -78,9 +101,21 @@ export default function Page() {
               />
             );
           })}
+          {userAddedText.map((val, i) => {
+            return (
+              <Message
+                key={val.content + i}
+                content={val.content}
+                isAI={val.isAI}
+                username={val.username}
+                shouldStream={val.shouldStream}
+              />
+            );
+          })}
+          <div className="" ref={messagesEndRef}></div>
         </div>
         <div className="sticky bg-[#18181B] bottom-0 left-2 right-1 z-40 ">
-          <MessageInput />
+          <MessageInput appendText={appendText} />
           {/* <p>Remember: Everything Characters say is made up!</p> */}
         </div>
       </div>
