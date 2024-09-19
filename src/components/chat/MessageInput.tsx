@@ -4,9 +4,11 @@ import { SendHorizontal, Phone } from "lucide-react";
 
 interface Props {
   appendText: (text: string) => void;
+  isLoading: boolean
 }
 
-export default function MessageInput({ appendText }: Props) {
+export default function MessageInput({ appendText,isLoading
+ }: Props) {
   const [inputText, setInputText] = useState("");
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -14,6 +16,9 @@ export default function MessageInput({ appendText }: Props) {
   };
 
   const onSubmit = () => {
+    if(isLoading) {
+      return
+    }
     if (inputText.trim() !== "") {
       appendText(inputText);
       setInputText("");

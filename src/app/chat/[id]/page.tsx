@@ -6,43 +6,51 @@ import MessageInput from "@/components/chat/MessageInput";
 import Sidebars from "@/components/chat/Sidebars";
 import UserProfileComponent from "@/components/chat/UserProfileSidebar";
 import { Button } from "@/components/ui/button";
-import { avengersConversation } from "@/lib/data";
 import { Menu } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
+import { Toaster } from "@/components/ui/toaster";
+import { useToast } from "@/hooks/use-toast";
+import axios from "axios";
 
-type MessageType = {
-  username: string;
+type ChatType = {
+  role: "user" | "assistant";
   content: string;
-  isAI: boolean;
-  shouldStream?: boolean;
 };
 
 export default function Page() {
   const [chatSidebar, setChatSidebar] = useState(true);
   const [profileSidebar, setProfileSidebar] = useState(false);
 
-  const [userAddedText, setUserAddedText] = useState<MessageType[]>([]);
+  const [chat, setChat] = useState<ChatType[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
-  const appendText = (text: string) => {
-    setUserAddedText((prev) => {
-      return [
+  const appendText = async (text: string) => {
+    setChat((prev) => [...prev, { content: text, role: "user" }]);
+    setIsLoading(true);
+    try {
+      const res = await axios.post("/api/message", {
+        messages: [...chat, { content: text, role: "user" }],
+      });
+      setChat((prev) => [
         ...prev,
-        { content: text, isAI: false, username: "Tony Stark" },
-        { content: text, isAI: true, username: "JARVIS", shouldStream: true },
-      ];
-    });
+        { content: res?.data?.message, role: "assistant" },
+      ]);
+    } catch (error) {
+      setChat((prev) => prev.slice(0, -1));
+      toast({
+        title: "Something went wrong.",
+        description: "Please message again.",
+      });
+    }
+    setIsLoading(false);
   };
 
   const openProfileSidebar = () => {
     setProfileSidebar(true);
   };
 
-  // const closeProfileSidebar = () => {
-  //   setProfileSidebar(false);
-  // };
-
   const openChatSidebar = () => {
-    console.log("Hello God!");
     setChatSidebar(true);
   };
 
@@ -58,10 +66,11 @@ export default function Page() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [userAddedText]);
+  }, [chat]);
 
   return (
     <main className="relative bg-[#18181B] flex justify-between overflow-hidden h-screen">
+      <Toaster />
       <Sidebars
         chatSidebar={chatSidebar}
         profileSidebar={profileSidebar}
@@ -91,32 +100,23 @@ export default function Page() {
       </div>
       <div className="overflow-auto flex-grow relative">
         <div className="my-24 flex-grow px-4 w-full max-w-3xl mx-auto ">
-          {avengersConversation.map((val) => {
-            return (
-              <Message
-                key={val.content}
-                content={val.content}
-                isAI={val.isAI}
-                username={val.username}
-              />
-            );
-          })}
-          {userAddedText.map((val, i) => {
+          <div className="h-screen"></div>
+          {chat.map((val, i) => {
             return (
               <Message
                 key={val.content + i}
                 content={val.content}
-                isAI={val.isAI}
-                username={val.username}
-                shouldStream={val.shouldStream}
+                isAI={val.role === "assistant"}
+                username={val.role === "user" ? "Username" : "Assistant"}
+                shouldStream={val.role === "assistant"}
               />
             );
           })}
+
           <div className="" ref={messagesEndRef}></div>
         </div>
         <div className="sticky bg-[#18181B] bottom-0 left-2 right-1 z-40 ">
-          <MessageInput appendText={appendText} />
-          {/* <p>Remember: Everything Characters say is made up!</p> */}
+          <MessageInput isLoading={isLoading} appendText={appendText} />
         </div>
       </div>
       <div
