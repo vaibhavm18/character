@@ -1,4 +1,4 @@
-export const avengersConversation = [
+export const avengersConversations = [
   {
     content: "Sir, I've detected an anomaly in the Earth's upper atmosphere. It appears to be an interdimensional portal forming.",
     isAI: true,
