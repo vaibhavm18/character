@@ -9,14 +9,8 @@ import LoginDialog from "@/components/LoginDialog";
 import Sidebar from "@/components/Sidebar";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
-import { UserProfileCard } from "@/components/DecisionCard";
 import FeaturedProfile from "@/components/FeaturedProfile";
 
-type Props = {
-  params: {
-    id: string
-  }
-}
 
 
 export default function Page() {

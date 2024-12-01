@@ -24,25 +24,17 @@ type Props = {
   };
 };
 
-
-
-export default function Page({params}:Props) {
+export default function Page({ params }: Props) {
   const [chatSidebar, setChatSidebar] = useState(true);
   const [profileSidebar, setProfileSidebar] = useState(false);
 
   const [chat, setChat] = useState<ChatType[]>([]);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [isChatLoadin, setIsChatLoading] = useState(true);
 
   const { toast } = useToast();
 
   const productId = parseInt(params.id, 10);
-
-  if(productId < 1 || productId > 5) {
-    return <>Invalid id</>
-  }
-
 
   const appendText = async (text: string) => {
     setChat((prev) => [...prev, { content: text, role: "user" }]);
@@ -50,7 +42,7 @@ export default function Page({params}:Props) {
     try {
       const res = await axios.post("/api/message", {
         messages: [...chat, { content: text, role: "user" }],
-        name: sampleProfiles[productId-1].name,
+        name: sampleProfiles[productId - 1].name,
       });
       setChat((prev) => [
         ...prev,
@@ -88,6 +80,10 @@ export default function Page({params}:Props) {
   useEffect(() => {
     scrollToBottom();
   }, [chat]);
+
+  if (productId < 1 || productId > 5) {
+    return <>Invalid id</>;
+  }
 
   return (
     <main className="relative bg-[#18181B] flex justify-between overflow-hidden h-screen">

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { UserProfileCard } from "./DecisionCard";
 
 
@@ -47,22 +47,22 @@ export const sampleProfiles = [
   },
 ];
 
-type Chars = {
-  name: string;
-  charId: string;
-  username: string;
-  followers: string;
-  avatarSrc: string;
-  bio: string;
-};
+// type Chars = {
+//   name: string;
+//   charId: string;
+//   username: string;
+//   followers: string;
+//   avatarSrc: string;
+//   bio: string;
+// };
 
-interface Props {
-  profiles: Chars[];
-}
+// interface Props {
+//   profiles: Chars[];
+// }
 
 export default function FeaturedProfile() {
   // const [characters, setCharacters] = useState<Chars[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
   // useEffect(() => {
   //   async function getCharacters() {
   //     if(isLoading === false) {
