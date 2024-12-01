@@ -2,8 +2,7 @@ import { OpenAI } from "openai";
 import { NextRequest, NextResponse } from "next/server";
 
 const client = new OpenAI({
-  baseURL: "https://integrate.api.nvidia.com/v1",
-  apiKey: process.env.API_KEY,
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 interface Message {
@@ -13,36 +12,38 @@ interface Message {
 
 interface RequestBody {
   messages: Message[];
+  name:string;
 }
-
-const systemPrompt = `
-You are an AI assistant specialized in chatting with users. Your responses should be:
-1. Accurate and up-to-date
-2. Concise yet informative
-3. Tailored to the user's level of understanding
-4. Ethical and unbiased
-If you're unsure about something, admit it and offer to find more information.
-Limit your responses to 25-30 words or less.
-`;
+const createSystemPrompt = (personality: string): string => {
+  return `
+    Respond in the style of ${personality}. Keep your replies:
+    1. Accurate and up-to-date
+    2. Concise and clear
+    3. Tailored to the user's understanding
+    If you're unsure, admit it and suggest finding more info.
+    Keep responses to 25-30 words, and never mention you're AI or an assistant.
+  `;
+};
 
 export async function POST(request: NextRequest) {
   try {
     const body = (await request.json()) as RequestBody;
-    const { messages } = body;
+    const { messages, name } = body;
 
-    if (!messages || messages.length === 0) {
+    if (!messages || !name || messages.length === 0) {
       return NextResponse.json(
         { error: "No messages provided" },
         { status: 403 }
       );
     }
+    console.log("Name", name)
 
     const completion = await client.chat.completions.create({
-      model: "google/gemma-2-27b-it",
+      model: "chatgpt-4o-latest",
       messages: [
         {
           role: "assistant",
-          content: systemPrompt,
+          content: createSystemPrompt(name),
         },
         ...messages,
       ],

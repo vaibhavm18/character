@@ -4,14 +4,22 @@ import { Header } from "@/components/Header";
 import ForYou from "@/components/ForYou";
 import AvatarText from "@/components/AvtarText";
 import Profile from "@/components/profile";
-import DecisionCard from "@/components/DecisionCard";
 import FeatureSelect from "@/components/FeatureSelect";
 import LoginDialog from "@/components/LoginDialog";
 import Sidebar from "@/components/Sidebar";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
+import { UserProfileCard } from "@/components/DecisionCard";
+import FeaturedProfile from "@/components/FeaturedProfile";
 
-export default function Home() {
+type Props = {
+  params: {
+    id: string
+  }
+}
+
+
+export default function Page() {
   const [isLogin, setIsLogin] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isLargeScreen, setIsLargeScreen] = useState(false);
@@ -95,14 +103,7 @@ export default function Home() {
 
         <section className="my-8">
           <h2 className="text-xl mb-4">Featured</h2>
-          <div className="flex gap-x-3 overflow-x-auto pb-4">
-            <DecisionCard />
-            <DecisionCard />
-            <DecisionCard />
-            <DecisionCard />
-            <DecisionCard />
-            <DecisionCard />
-          </div>
+          <FeaturedProfile />
         </section>
 
         {/* <div className="flex gap-x-3 overflow-x-auto pb-4">
@@ -113,14 +114,7 @@ export default function Home() {
 
         <section className="my-8">
           <h2 className="text-xl mb-4">Featured</h2>
-          <div className="flex gap-x-3 overflow-x-auto pb-4">
-            <DecisionCard />
-            <DecisionCard />
-            <DecisionCard />
-            <DecisionCard />
-            <DecisionCard />
-            <DecisionCard />
-          </div>
+          <FeaturedProfile />
         </section>
 
         <section className="my-8">

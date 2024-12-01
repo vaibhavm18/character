@@ -11,19 +11,38 @@ import React, { useEffect, useRef, useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
+import { sampleProfiles } from "@/components/FeaturedProfile";
 
 type ChatType = {
   role: "user" | "assistant";
   content: string;
 };
 
-export default function Page() {
+type Props = {
+  params: {
+    id: string;
+  };
+};
+
+
+
+export default function Page({params}:Props) {
   const [chatSidebar, setChatSidebar] = useState(true);
   const [profileSidebar, setProfileSidebar] = useState(false);
 
   const [chat, setChat] = useState<ChatType[]>([]);
+
   const [isLoading, setIsLoading] = useState(false);
+  const [isChatLoadin, setIsChatLoading] = useState(true);
+
   const { toast } = useToast();
+
+  const productId = parseInt(params.id, 10);
+
+  if(productId < 1 || productId > 5) {
+    return <>Invalid id</>
+  }
+
 
   const appendText = async (text: string) => {
     setChat((prev) => [...prev, { content: text, role: "user" }]);
@@ -31,12 +50,14 @@ export default function Page() {
     try {
       const res = await axios.post("/api/message", {
         messages: [...chat, { content: text, role: "user" }],
+        name: sampleProfiles[productId-1].name,
       });
       setChat((prev) => [
         ...prev,
         { content: res?.data?.message, role: "assistant" },
       ]);
     } catch (error) {
+      console.log("Error", error);
       setChat((prev) => prev.slice(0, -1));
       toast({
         title: "Something went wrong.",
@@ -76,6 +97,7 @@ export default function Page() {
         profileSidebar={profileSidebar}
         setChatSidebar={setChatSidebar}
         setProfileSidebar={setProfileSidebar}
+        id={productId}
       />
       <div className="fixed bg-[#18181B] top-0 left-0 right-0 z-40 2xl:hidden">
         <Header
@@ -107,7 +129,11 @@ export default function Page() {
                 key={val.content + i}
                 content={val.content}
                 isAI={val.role === "assistant"}
-                username={val.role === "user" ? "Username" : "Assistant"}
+                username={
+                  val.role === "user"
+                    ? "Username"
+                    : sampleProfiles[productId - 1].name
+                }
                 shouldStream={val.role === "assistant"}
               />
             );
@@ -122,7 +148,7 @@ export default function Page() {
       <div
         className={`w-[400px] hidden 2xl:block p-6 border-l-[0.2px] border-gray-700 relative z-50`}
       >
-        <UserProfileComponent />
+        <UserProfileComponent id={productId} />
       </div>
     </main>
   );

@@ -13,8 +13,13 @@ import {
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { sampleProfiles } from "../FeaturedProfile";
 
-const UserProfileComponent = () => {
+interface Props {
+  id: number
+}
+
+const UserProfileComponent = ({id}:Props) => {
   return (
     <div className=" text-white  bg-[#18181B]   w-full h-full space-y-4">
       <div className="flex items-center space-x-3">
@@ -23,9 +28,13 @@ const UserProfileComponent = () => {
           <AvatarFallback>EL</AvatarFallback>
         </Avatar>
         <div className="flex-1">
-          <h2 className="font-semibold">Eula Lawrence</h2>
-          <p className="text-sm text-gray-400">By @lottyleri</p>
-          <p className="text-sm text-gray-400">58.2m chats</p>
+          <h2 className="font-semibold">{sampleProfiles[id - 1].name}</h2>
+          <p className="text-sm text-gray-400">
+            By @{sampleProfiles[id - 1].username}
+          </p>
+          <p className="text-sm text-gray-400">
+            {sampleProfiles[id - 1].followers} chats
+          </p>
         </div>
       </div>
 
@@ -53,7 +62,7 @@ const UserProfileComponent = () => {
       </div>
 
       <div className="text-sm">
-        <p>Genshin Impact | Vengeance will be mine!</p>
+        <p> {sampleProfiles[id - 1].bio} </p>
       </div>
 
       <Button className=" px-4 py-2 rounded-2xl justify-start hover:bg-[#202024]">
