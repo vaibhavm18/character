@@ -5,9 +5,10 @@ import { Button } from "../ui/button";
 interface Props {
   openChatSidebar: () => void;
   openProfileSidebar: () => void;
+  username:string
 }
 
-export default function Header({ openChatSidebar, openProfileSidebar }: Props) {
+export default function Header({ openChatSidebar, openProfileSidebar , username}: Props) {
   return (
     <header className="w-full flex justify-between items-center px-4 py-2 relative z-20">
       <div className="flex items-center gap-4">
@@ -18,7 +19,7 @@ export default function Header({ openChatSidebar, openProfileSidebar }: Props) {
           <span className="p-6 rounded-full bg-white"></span>
           <div className="flex flex-col items-start">
             <p>Username User</p>
-            <p>by @username</p>
+            <p>by @{username}</p>
           </div>
         </div>
       </div>

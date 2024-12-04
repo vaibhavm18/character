@@ -1,46 +1,33 @@
-import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import { NextResponse } from "next/server";
 
 export const maxDuration = 59;
 
 // Define type for chat message
-type ChatMessage = {
-  id: string;
-  charId: string;
-  name: string;
-  role: 'user' | 'assistant';
-  message: string;
-  created_at: string;
-};
-
-export async function GET(req: NextRequest) {
+export async function POST(request: Request) {
   try {
-    const { searchParams } = new URL(req.url);
-    const charId = searchParams.get('charId');
+    const { user_id, chat_id, sort_order = "asc" } = await request.json(); // Parse the JSON body
 
-    if (!charId) {
-      return NextResponse.json(
-        { error: "charId is required" },
-        { status: 400 }
-      );
+    if (!user_id || !chat_id) {
+      return new Response("user_id and chat_id are required", { status: 400 });
     }
 
     const { data, error } = await supabase
-      .from("chats")
-      .select("*")
-      .eq('charId', charId)
-      .order('created_at', { ascending: true });
+      .from("messages")
+      .select("id, user_id, chat_id, role, message, created_at, updated_at")
+      .eq("user_id", user_id)
+      .eq("chat_id", chat_id)
+      .order("created_at", { ascending: sort_order === "asc" })
+      .limit(100); // Optional: Limit the results to 100
 
-    if (error) throw error;
+    if (error) {
+      throw new Error(error.message);
+    }
 
-    return NextResponse.json({ 
-      message: 'Messages retrieved successfully', 
-      data: data as ChatMessage[]
-    });
+    return NextResponse.json(data);
   } catch (error) {
-    console.error("error: ", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Something went wrong" },
       { status: 500 }
     );
   }

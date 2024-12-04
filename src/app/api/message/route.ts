@@ -1,5 +1,6 @@
 import { OpenAI } from "openai";
 import { NextRequest, NextResponse } from "next/server";
+import { supabase } from "@/lib/supabase";
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -12,7 +13,10 @@ interface Message {
 
 interface RequestBody {
   messages: Message[];
-  name:string;
+  name: string;
+  userId: string;
+  chatId: string;
+  lastMessage: string;
 }
 const createSystemPrompt = (personality: string): string => {
   return `
@@ -28,15 +32,15 @@ const createSystemPrompt = (personality: string): string => {
 export async function POST(request: NextRequest) {
   try {
     const body = (await request.json()) as RequestBody;
-    const { messages, name } = body;
+    const { messages, name, chatId, userId, lastMessage } = body;
 
-    if (!messages || !name || messages.length === 0) {
+    if (!messages || !name || messages.length === 0 || !chatId || !userId) {
       return NextResponse.json(
         { error: "No messages provided" },
         { status: 403 }
       );
     }
-    console.log("Name", name)
+    console.log("Name", name);
 
     const completion = await client.chat.completions.create({
       model: "chatgpt-4o-latest",
@@ -53,6 +57,34 @@ export async function POST(request: NextRequest) {
     });
 
     const assistantResponse = completion.choices[0].message.content;
+
+    await Promise.all([
+      await supabase
+        .from("messages")
+        .insert([
+          {
+            user_id: userId,
+            chat_id: chatId,
+            role: "user",
+            message: lastMessage,
+          },
+        ])
+        .select("id, user_id, chat_id, role, message, created_at")
+        .single(),
+      ,
+      await supabase
+        .from("messages")
+        .insert([
+          {
+            user_id: userId,
+            chat_id: chatId,
+            role: "assistant",
+            message: assistantResponse,
+          },
+        ])
+        .select("id, user_id, chat_id, role, message, created_at")
+        .single(),
+    ]);
 
     return NextResponse.json({ message: assistantResponse });
   } catch (error) {

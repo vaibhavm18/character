@@ -1,54 +1,56 @@
-import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import { NextResponse } from "next/server";
 
-export const maxDuration = 59;
-
-// Define types for the request body and chat message
-type AddMessageRequest = {
-  charId: string;
-  name: string;
-  role: 'user' | 'assistant';
-  message: string;
-};
-
-type ChatMessage = {
-  id: string;
-  charId: string;
-  name: string;
-  role: 'user' | 'assistant';
-  message: string;
-  created_at: string;
-};
-
-export async function POST(req: NextRequest) {
+// Define type for chat and message
+export async function POST(request: Request) {
   try {
-    const { charId, name, role, message }: AddMessageRequest = await req.json();
+    const { user_id, chat_name, initial_message } = await request.json(); // Parse the JSON body
 
-    // Validate input
-    if (!charId || !name || !role || !message) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
+    if (!user_id || !chat_name || !initial_message) {
+      return new Response("user_id, chat_name, and initial_message are required", { status: 400 });
     }
 
-    // Insert the new message
-    const { data, error } = await supabase
+    // Create a new chat entry
+    const { data: chatData, error: chatError } = await supabase
       .from("chats")
-      .insert({ charId, name, role, message })
-      .select()
+      .insert([
+        {
+          user_id,
+          chat_name,
+          created_at: new Date(),
+        },
+      ])
+      .select("id")
       .single();
 
-    if (error) throw error;
+    if (chatError) {
+      throw new Error(chatError.message);
+    }
 
-    return NextResponse.json({ 
-      message: 'Message added successfully', 
-      data: data as ChatMessage
-    });
+    const chat_id = chatData.id;
+
+    // Insert an initial message in the newly created chat
+    const { data: messageData, error: messageError } = await supabase
+      .from("messages")
+      .insert([
+        {
+          user_id,
+          chat_id,
+          role: "user",  
+          message: initial_message,
+        },
+      ])
+      .select("id, user_id, chat_id, role, message, created_at")
+      .single();
+
+    if (messageError) {
+      throw new Error(messageError.message);
+    }
+
+    return NextResponse.json({ chat: chatData, message: messageData });
   } catch (error) {
-    console.error("error: ", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Something went wrong: "},
       { status: 500 }
     );
   }
