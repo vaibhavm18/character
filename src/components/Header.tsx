@@ -13,25 +13,26 @@ interface Props {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   closeSidebar: () => void;
-  logout: () => void;
+  logout: () => Promise<void>;
   isLargerScreen: boolean;
+  setDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const Header: React.FC<Props> = ({
   isLogin,
-  setIsLogin,
   isOpen,
   setIsOpen,
   closeSidebar,
   logout,
   isLargerScreen,
+  setDialogOpen,
 }) => {
   const openSideBar = () => {
     setIsOpen(true);
   };
 
   const login = () => {
-    setIsLogin(true);
+    setDialogOpen(true);
   };
 
   return (
@@ -42,7 +43,11 @@ export const Header: React.FC<Props> = ({
             <div className="flex items-center justify-between md:justify-start  gap-7 w-full">
               <h1 className="text-xl font-bold">character.ai</h1>
               <div className="flex gap-4 items-center">
-                <Button variant="secondary" className="rounded-3xl">
+                <Button
+                  onClick={login}
+                  variant="secondary"
+                  className="rounded-3xl"
+                >
                   Sign up
                 </Button>
                 <Button
@@ -75,12 +80,14 @@ export const Header: React.FC<Props> = ({
               <UserAvatar username="Username" />
             </div>
             {!isOpen ? (
-              <Button
-                className="bg-transparent hover:bg-transparent 2xl:hidden"
-                onClick={openSideBar}
-              >
-                <Menu />
-              </Button>
+              <>
+                <Button
+                  className="bg-transparent hover:bg-transparent 2xl:hidden"
+                  onClick={openSideBar}
+                >
+                  <Menu />
+                </Button>
+              </>
             ) : (
               <div></div>
             )}

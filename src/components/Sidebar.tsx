@@ -4,7 +4,7 @@ import { Compass, ChevronLeft, Plus } from "lucide-react";
 
 interface Props {
   closeSidebar: () => void;
-  logout: () => void;
+  logout:  () => Promise<void>;
 }
 
 const Sidebar = ({ closeSidebar, logout }: Props) => {
