@@ -94,7 +94,7 @@ export default function ChatSidebar({ closeSidebar, user_id }: Props) {
               className="w-full py-6 flex justify-start gap-2 rounded-2xl bg-[#26272B] hover:bg-[#262628]"
             >
               <span className="p-3 bg-white rounded-full"></span>
-              <p>{sampleProfiles[val - 1].username}</p>
+              <p>{sampleProfiles[val - 1].name}</p>
             </Button>
           );
         })}
