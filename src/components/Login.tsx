@@ -13,7 +13,7 @@ interface Props {
   setIsLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }
 const LoginComponent: React.FC<Props> = ({ setDialogOpen, setIsLogin }) => {
-  const [showLogin, setShowLogin] = useState(false);
+  const [showLogin, setShowLogin] = useState(true);
   const [details, setDetails] = useState({ email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
 
