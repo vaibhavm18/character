@@ -9,6 +9,7 @@ interface Props {
   setChatSidebar: React.Dispatch<React.SetStateAction<boolean>>;
   id:number;
   setProfileSidebar: React.Dispatch<React.SetStateAction<boolean>>;
+  userId:string
 }
 
 export default function Sidebars({
@@ -16,7 +17,8 @@ export default function Sidebars({
   profileSidebar,
   setChatSidebar,
   setProfileSidebar,
-  id
+  id,
+  userId
 }: Props) {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -46,7 +48,7 @@ export default function Sidebars({
               side={"left"}
               className="bg-[#131316] 2xl:hidden border-none"
             >
-              <ChatSidebar closeSidebar={closeSidebar} />
+              <ChatSidebar closeSidebar={closeSidebar} user_id={userId} />
             </SheetContent>
           </Sheet>
           <Sheet open={profileSidebar} onOpenChange={setProfileSidebar}>

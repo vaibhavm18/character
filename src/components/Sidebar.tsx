@@ -1,13 +1,47 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Compass, ChevronLeft, Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
+import { sampleProfiles } from "./FeaturedProfile";
 
 interface Props {
   closeSidebar: () => void;
-  logout:  () => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 const Sidebar = ({ closeSidebar, logout }: Props) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [chats, setChats] = useState<number[]>([]);
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchPrev = async () => {
+      setIsLoading(true);
+      const { data, error } = await supabase.auth.getUser();
+      if (!error) {
+        const response = await fetch("/api/history", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user_id: data.user.id,
+          }),
+        });
+
+        if (response.ok) {
+          const chats = await response.json();
+          console.log("Chats", chats);
+          setChats(chats);
+        }
+      }
+      setIsLoading(false);
+    };
+
+    fetchPrev();
+  }, []);
+
   return (
     <div className="h-full w-full flex flex-col relative z-50">
       <div className="flex items-center justify-between mb-8">
@@ -40,6 +74,28 @@ const Sidebar = ({ closeSidebar, logout }: Props) => {
       </Button>
 
       <div className="text-sm font-bold text-gray-400 mb-2">Chats</div>
+
+      {isLoading && (
+        <div className="flex justify-center items-center">
+          <div className="w-6 h-6 border-4 border-t-transparent border-gray-500 border-solid rounded-full animate-spin"></div>
+        </div>
+      )}
+      <div className="overflow-auto flex-grow space-y-2">
+        {chats.map((val) => {
+          return (
+            <Button
+              key={val}
+              onClick={() => {
+                router.push(`/chat/${val}`);
+              }}
+              className="w-full py-6 flex justify-start gap-2 rounded-2xl bg-[#26272B] hover:bg-[#262628]"
+            >
+              <span className="p-3 bg-white rounded-full"></span>
+              <p>{sampleProfiles[val - 1].username}</p>
+            </Button>
+          );
+        })}
+      </div>
 
       <div className="flex-grow"></div>
 

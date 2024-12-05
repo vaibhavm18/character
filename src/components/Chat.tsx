@@ -107,6 +107,7 @@ export default function Chat({ params, id, username, initialChats }: Props) {
         setChatSidebar={setChatSidebar}
         setProfileSidebar={setProfileSidebar}
         id={productId}
+        userId={id}
       />
       <div className="fixed bg-[#18181B] top-0 left-0 right-0 z-40 2xl:hidden">
         <Header
@@ -128,7 +129,7 @@ export default function Chat({ params, id, username, initialChats }: Props) {
           chatSidebar ? "w-[300px] opacity-100" : "w-0 opacity-0"
         }`}
       >
-        <ChatSidebar closeSidebar={closeChatSidebar} />
+        <ChatSidebar closeSidebar={closeChatSidebar} user_id={id} />
       </div>
       <div className="overflow-auto flex-grow relative">
         <div className="my-24 flex-grow px-4 w-full max-w-3xl mx-auto ">

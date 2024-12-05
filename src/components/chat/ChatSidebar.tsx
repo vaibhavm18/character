@@ -1,12 +1,44 @@
 import { ChevronLeft, Plus, Compass, Dot, Search } from "lucide-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { sampleProfiles } from "../FeaturedProfile";
+import { useRouter } from "next/navigation";
 
 interface Props {
   closeSidebar: () => void;
+  user_id: string;
 }
-export default function ChatSidebar({ closeSidebar }: Props) {
+
+export default function ChatSidebar({ closeSidebar, user_id }: Props) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [chats, setChats] = useState<number[]>([]);
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchPrev = async () => {
+      setIsLoading(true);
+      const response = await fetch("/api/history", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id,
+        }),
+      });
+
+      if (response.ok) {
+        const chats = await response.json();
+        console.log("Chats", chats);
+        setChats(chats);
+      }
+      setIsLoading(false);
+    };
+
+    fetchPrev();
+  }, []);
+
   return (
     <div className="h-full w-full flex flex-col gap-1 relative z-50 overflow-hidden">
       <div className="flex items-center justify-between mb-4">
@@ -44,17 +76,28 @@ export default function ChatSidebar({ closeSidebar }: Props) {
         />
       </div>
 
-      <div className="text-sm font-bold text-gray-400 mb-2">Today</div>
+      <div className="text-sm font-bold text-gray-400 mb-2">Chats</div>
 
+      {isLoading && (
+        <div className="flex justify-center items-center">
+          <div className="w-6 h-6 border-4 border-t-transparent border-gray-500 border-solid rounded-full animate-spin"></div>
+        </div>
+      )}
       <div className="overflow-auto flex-grow space-y-2">
-        <Button className="w-full py-6 flex justify-start gap-2 rounded-2xl bg-[#26272B] hover:bg-[#262628]">
-          <span className="p-3 bg-white rounded-full"></span>
-          <p>Username user</p>
-        </Button>
-        <Button className="w-full py-6 flex justify-start gap-2 rounded-2xl bg-transparent">
-          <span className="p-3 bg-white rounded-full"></span>
-          <p>Username user</p>
-        </Button>
+        {chats.map((val) => {
+          return (
+            <Button
+              key={val}
+              onClick={() => {
+                router.push(`/chat/${val}`);
+              }}
+              className="w-full py-6 flex justify-start gap-2 rounded-2xl bg-[#26272B] hover:bg-[#262628]"
+            >
+              <span className="p-3 bg-white rounded-full"></span>
+              <p>{sampleProfiles[val - 1].username}</p>
+            </Button>
+          );
+        })}
       </div>
 
       <div className="text-xs flex justify-center items-center text-gray-500 mb-4">

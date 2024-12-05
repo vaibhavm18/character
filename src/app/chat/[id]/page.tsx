@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Chat, { ChatType } from "@/components/Chat";
 import { supabase } from "@/lib/supabase";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 type Props = {
   params: {
@@ -15,6 +15,7 @@ export default function Page({ params }: Props) {
   const [id, setId] = useState("");
   const [username, setUsername] = useState("");
   const [initialChats, setInitialChats] = useState<ChatType[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     async function getUser() {
@@ -38,10 +39,11 @@ export default function Page({ params }: Props) {
         if (response.ok) {
           const chats = await response.json();
           console.log("Chats", chats);
-          setInitialChats(chats)
+          setInitialChats(chats);
         }
       } else {
-        redirect("/");
+        setIsLoading(false);
+        router.push("/");
       }
 
       setIsLoading(false);
